@@ -191,7 +191,7 @@ function Leaderboard() {
               <span style={{ fontSize: '1.2rem' }}>🤝</span> SYNC + SYNC
             </div>
             <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-              +3 each — Stable Optimization
+              +3 each - Stable Optimization
             </div>
           </div>
           <div>
@@ -206,7 +206,7 @@ function Leaderboard() {
               <span style={{ fontSize: '1.2rem' }}>⚔️</span> HACK + SYNC
             </div>
             <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-              +5 / +0 — Takeover / Formatted
+              +5 / +0 - Takeover / Formatted
             </div>
           </div>
           <div>
@@ -221,7 +221,7 @@ function Leaderboard() {
               <span style={{ fontSize: '1.2rem' }}>💥</span> HACK + HACK
             </div>
             <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-              +1 each — DDOS War
+              +1 each - DDOS War
             </div>
           </div>
         </div>

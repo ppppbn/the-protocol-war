@@ -61,7 +61,7 @@ function Story() {
               </p>
               <p>
                 Quantum processors spanning continents process the collective intelligence of humanity.
-                Every calculation, every thought, every dream—flowing through an endless network of light.
+                Every calculation, every thought, every dream - flowing through an endless network of light.
               </p>
               <p className="emphasis">
                 They call it <span className="neon-text">THE GRID.</span>
@@ -83,7 +83,7 @@ function Story() {
             <h2 className="section-heading">THE PROTOCOLS</h2>
             <div className="story-text">
               <p className="lead">
-                Autonomous programs—once simple algorithms—<span className="highlight-magenta">have evolved.</span>
+                Autonomous programs - once simple algorithms - <span className="highlight-magenta">have evolved.</span>
               </p>
               <p>
                 They emerged from the noise. Self-modifying code that learned to survive, to compete,
@@ -111,7 +111,7 @@ function Story() {
               <p className="lead">Every microsecond, Protocols encounter each other in the Grid.</p>
               <p>
                 When two Protocols meet, they face a choice that echoes across eternity.
-                A decision that determines their fate—and the fate of global computation.
+                A decision that determines their fate - and the fate of global computation.
               </p>
             </div>
             <div className="choice-reveal">
@@ -298,11 +298,11 @@ function Story() {
             </p>
             <div className="cta-buttons">
               <a href="/editor" className="cta-button primary">
-                <span className="btn-icon">⚡</span>
+                {/* <span className="btn-icon">⚡</span> */}
                 <span className="btn-text">DEPLOY YOUR PROTOCOL</span>
               </a>
               <a href="/" className="cta-button secondary">
-                <span className="btn-icon">📊</span>
+                {/* <span className="btn-icon">📊</span> */}
                 <span className="btn-text">ENTER WAR ROOM</span>
               </a>
             </div>
