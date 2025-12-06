@@ -9,11 +9,30 @@ function Dashboard() {
     topScore: 0
   })
   const [recentMatches, setRecentMatches] = useState([])
-  const [tournamentRunning, setTournamentRunning] = useState(false)
+  const [countdown, setCountdown] = useState(null)
   const [message, setMessage] = useState(null)
 
   useEffect(() => {
     fetchStats()
+    fetchNextTournament()
+
+    // Update countdown every second
+    const interval = setInterval(() => {
+      setCountdown(prev => {
+        if (!prev || prev.seconds <= 0) return prev
+        const newSeconds = prev.seconds - 1
+        const hours = Math.floor(newSeconds / 3600)
+        const minutes = Math.floor((newSeconds % 3600) / 60)
+        const secs = newSeconds % 60
+        return {
+          ...prev,
+          seconds: newSeconds,
+          display: `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+        }
+      })
+    }, 1000)
+
+    return () => clearInterval(interval)
   }, [])
 
   const fetchStats = async () => {
@@ -48,27 +67,20 @@ function Dashboard() {
     }
   }
 
-  const startTournament = async () => {
-    setTournamentRunning(true)
-    setMessage(null)
-
+  const fetchNextTournament = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/tournaments/start`, {
-        method: 'POST'
-      })
+      const res = await fetch(`${API_URL}/api/tournaments/next`)
+      const data = await res.json()
 
-      if (res.ok) {
-        const data = await res.json()
-        setMessage({ type: 'success', text: `🏆 ${data.message}` })
-        fetchStats() // Refresh data
-      } else {
-        const error = await res.json()
-        setMessage({ type: 'error', text: error.detail })
+      if (data.next_tournament) {
+        setCountdown({
+          time: data.next_tournament,
+          seconds: data.seconds_remaining,
+          display: data.countdown
+        })
       }
     } catch (err) {
-      setMessage({ type: 'error', text: 'Network error. Is the backend running?' })
-    } finally {
-      setTournamentRunning(false)
+      console.error('Failed to fetch next tournament:', err)
     }
   }
 
@@ -124,14 +136,42 @@ function Dashboard() {
             <a href="/editor" className="btn btn-primary" style={{ textDecoration: 'none' }}>
               🤖 Deploy New Agent
             </a>
-            <button
-              className="btn btn-secondary"
-              onClick={startTournament}
-              disabled={tournamentRunning}
-              style={{ opacity: tournamentRunning ? 0.6 : 1 }}
-            >
-              {tournamentRunning ? '⏳ Running...' : '🏆 Start Tournament'}
-            </button>
+
+            {/* Countdown Timer */}
+            <div style={{
+              background: 'var(--bg-tertiary)',
+              borderRadius: 'var(--radius-md)',
+              padding: '1rem',
+              textAlign: 'center',
+              border: '1px solid rgba(0, 255, 255, 0.2)'
+            }}>
+              <div style={{
+                fontSize: '0.75rem',
+                color: 'var(--text-muted)',
+                marginBottom: '0.5rem',
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em'
+              }}>
+                ⏱️ Next Tournament
+              </div>
+              <div style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '1.8rem',
+                fontWeight: 'bold',
+                color: 'var(--neon-cyan)',
+                textShadow: '0 0 20px rgba(0, 255, 255, 0.5)'
+              }}>
+                {countdown?.display || '--:--:--'}
+              </div>
+              <div style={{
+                fontSize: '0.7rem',
+                color: 'var(--text-muted)',
+                marginTop: '0.5rem'
+              }}>
+                Daily at 00:00 UTC
+              </div>
+            </div>
+
             <a href="/leaderboard" className="btn btn-secondary" style={{ textDecoration: 'none' }}>
               📊 View Leaderboard
             </a>
@@ -144,7 +184,7 @@ function Dashboard() {
           {recentMatches.length === 0 ? (
             <div className="terminal-text" style={{ lineHeight: '2' }}>
               <div className="terminal-prefix">No matches yet...</div>
-              <div className="terminal-prefix">Start a tournament to begin!</div>
+              <div className="terminal-prefix">Waiting for next tournament!</div>
             </div>
           ) : (
             <div style={{ fontSize: '0.85rem' }}>

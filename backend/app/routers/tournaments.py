@@ -1,6 +1,7 @@
 """
 Tournament API routes
 """
+from datetime import datetime, timezone
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
@@ -9,6 +10,7 @@ from pydantic import BaseModel
 from ..database import get_db
 from .. import models
 from ..engine import run_tournament, get_leaderboard_stats
+from ..scheduler import get_next_run_time
 
 router = APIRouter(prefix="/api/tournaments", tags=["tournaments"])
 
@@ -84,6 +86,40 @@ def list_tournaments(db: Session = Depends(get_db)):
         }
         for t in tournaments
     ]
+
+
+# NOTE: /next must be defined BEFORE /{tournament_id} to avoid route conflict
+@router.get("/next")
+def get_next_tournament():
+    """Get the next scheduled tournament time (public endpoint)."""
+    next_run = get_next_run_time()
+    now = datetime.now(timezone.utc)
+    
+    if next_run:
+        # Calculate time remaining
+        delta = next_run - now
+        total_seconds = int(delta.total_seconds())
+        
+        if total_seconds < 0:
+            total_seconds = 0
+        
+        hours = total_seconds // 3600
+        minutes = (total_seconds % 3600) // 60
+        seconds = total_seconds % 60
+        
+        return {
+            "next_tournament": next_run.isoformat(),
+            "current_time": now.isoformat(),
+            "seconds_remaining": total_seconds,
+            "countdown": f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+        }
+    
+    return {
+        "next_tournament": None,
+        "current_time": now.isoformat(),
+        "seconds_remaining": None,
+        "countdown": None
+    }
 
 
 @router.get("/{tournament_id}")
