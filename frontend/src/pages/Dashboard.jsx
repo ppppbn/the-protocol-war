@@ -137,6 +137,10 @@ function Dashboard() {
               🤖 Deploy New Agent
             </a>
 
+            <a href="/leaderboard" className="btn btn-secondary" style={{ textDecoration: 'none' }}>
+              📊 View Leaderboard
+            </a>
+
             {/* Countdown Timer */}
             <div style={{
               background: 'var(--bg-tertiary)',
@@ -171,10 +175,6 @@ function Dashboard() {
                 Daily at 00:00 UTC
               </div>
             </div>
-
-            <a href="/leaderboard" className="btn btn-secondary" style={{ textDecoration: 'none' }}>
-              📊 View Leaderboard
-            </a>
           </div>
         </div>
 
